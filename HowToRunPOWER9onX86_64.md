@@ -4,7 +4,7 @@
 - [Download and Customize the CentOS Image](#download-and-customize-the-centos-image)
 - [Build qemu-system-ppc64](#build-qemu-system-ppc64)
 - [Run the VM](#run-the-vm)
-
+- [Create a Cluster](#create-a-cluster)
 ## Evaluation Environment
 ```
 +------------------------------------------+
@@ -151,7 +151,37 @@
    L1i cache:           32K
    NUMA node0 CPU(s):   0,1
    ```
-1. If you run the additional VM, run the following command.
+1. If you want to run the additional VM, run the following command.
    ```sh
    # qemu-system-ppc64 -machine pseries -cpu power9 -m 4096 -device virtio-blk-pci,id=scsi0,drive=drive0 -drive id=drive0,if=none,file=CentOS-8-GenericCloud-8.2.2004-20200611.2.ppc64le.qcow2  -nodefaults -nographic -serial stdio -smp cpus=2 -net nic,macaddr=52:54:00:12:34:57 -net socket,connect=localhost:1234
    ```
+1. You can access the VMs from the host OS via ssh.
+
+## Create a Cluster
+1. Create a configuration file using Cluster WebUI Offline.
+1. Copy the following files to the VMs.
+   - rpm (e.g. expresscls-4.2.2-1.ppc64le.rpm)
+   - License 
+   - Configuration file (clp.conf and scripts directory)
+1. Shutdown the VMs.
+1. Run the follwoing command to start the first node.
+   ```sh
+   # qemu-system-ppc64 -machine pseries -cpu power9 -m 4096 -device virtio-blk-pci,id=scsi0,drive=drive0 -drive id=drive0,if=none,file=CentOS-8-GenericCloud-8.2.2004-20200611.2.ppc64le.qcow2  -nodefaults -nographic -serial stdio -smp cpus=2 -net nic -net socket,listen=localhost:1234
+   ```
+   - **CAUTION**: After you type the above command, you can not access the VM from the host OS.
+1. Run the following command to the second node.
+   ```sh
+   # qemu-system-ppc64 -machine pseries -cpu power9 -m 4096 -device virtio-blk-pci,id=scsi0,drive=drive0 -drive id=drive0,if=none,file=CentOS-8-GenericCloud-8.2.2004-20200611.2.ppc64le.qcow2  -nodefaults -nographic -serial stdio -smp cpus=2 -net nic,macaddr=52:54:00:12:34:57 -net socket,connect=localhost:1234
+   ```
+ 1. Change the following parameters of the VMs.
+    - IP address
+    - Host name
+ 1. Change the following parameters in the clp.conf.
+    - IP address
+    - Host name
+ 1. Install the rpm file and register the license.
+ 1. Run the following command.
+    ```sh
+    # clpcfctrl --push -w -x <clp.conf directory>
+    ```
+ 1. Start your cluster.
