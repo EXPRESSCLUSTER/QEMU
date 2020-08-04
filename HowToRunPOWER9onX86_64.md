@@ -6,27 +6,50 @@
 - [Run the VM](#run-the-vm)
 - [Create a Cluster](#create-a-cluster)
 ## Evaluation Environment
+### Use Terminal Access Point (TAP)
 ```
-+------------------------------------------+
-| +--------------------------------------+ |
-| | Virtual Machine                      | |
-| | CentOS Linux release 8.2.2004 (Core) | |
-| | +--------------------+               | |
-| | | eth0 (192.168.2.x) |               | |
-| | +--+-----------------+               | |
-| +----|---------------------------------+ |
-|      |                                   |
-|   +--+-----------------+                 |
-|   | tap0               |                 |
-|   +--+-----------------+                 |
-|      |                                   |
-|   +--+-----------------+                 |
-|   | br0 (192.1686.2.1) |                 |
-|   +--------------------+                 |
-|                                          |
-| CentOS Linux release 7.8.2003 (Core)     |
-+------------------------------------------+
++-----------------------------------------------------------------------------------+
+| +--------------------------------------+ +--------------------------------------+ |
+| | Virtual Machine                      | | Virtual Machine                      | |
+| | CentOS Linux release 8.2.2004 (Core) | | CentOS Linux release 8.2.2004 (Core) | |
+| | +----------------------+             | | +----------------------+             | |
+| | | eth0 (192.168.122.x) |             | | | eth0 (192.168.122.x) |             | |
+| | +--+-------------------+             | | +--+-------------------+             | |
+| +----|---------------------------------+ +----|---------------------------------+ |
+|      |                                        |                                   |
+|      |        +-------------------------------+                                   |
+|      |        |                                                                   |
+|   +--+---+ +--+---+                                                               |
+|   | tap0 | | tap1 |                                                               |
+|   +--+---+ +--+---+                                                               |
+|      |        |                                                                   |
+|   +--+--------+------------+                                                      |
+|   | virbr0 (192.168.122.1) |                                                      |
+|   +------------------------+                                                      |
+|                                                                                   |
+| CentOS Linux release 7.8.2003 (Core)                                              |
++-----------------------------------------------------------------------------------+
 ```
+<!--
+### Connect Several VMs
+```
++------------------------------------------------------------------------------------+
+| +--------------------------------------+  +--------------------------------------+ |
+| | Virtual Machine                      |  | Virtual Machine                      | |
+| | CentOS Linux release 8.2.2004 (Core) |  | CentOS Linux release 8.2.2004 (Core) | |
+| | +--------------------+               |  | +--------------------+               | |
+| | | eth0 (192.168.x.x) |               |  | | eth0 (192.168.x.x) |               | |
+| | +--+-----------------+               |  | +--+-----------------+               | |
+| +----|---------------------------------+  +----|---------------------------------+ |
+|      |                                         |                                   |
+|   +--+-------------+                           |                                   |
+|   | localhost:1234 +---------------------------+                                   |
+|   +----------------+                                                               |
+|                                                                                    |
+| CentOS Linux release 7.8.2003 (Core)                                               |
++------------------------------------------------------------------------------------+
+```
+-->
 ## Download and Customize the CentOS Image
 1. Install CentOS 8 on the other machine.
 1. Install the following packages.
@@ -94,6 +117,13 @@
    ```sh
    # source ~/.bash_profile
    ```
+1. Create TAP interface.
+   ```sh
+   # ip tuntap add tap0 mode tap
+   # ip tuntap show tap0
+   # ifconfig tap0 0.0.0.0 promisc up
+   # brctl addif virbr0 tap0
+   ```
 1. Create the followin file.
    ```sh
    # vi /etc/qemu/bridge.conf
@@ -109,7 +139,7 @@
    ```
 1. Run the follwoing command.
    ```sh
-   # qemu-system-ppc64 -machine pseries -cpu power9 -m 4096 -device virtio-blk-pci,id=scsi0,drive=drive0 -drive id=drive0,if=none,file=CentOS-8-GenericCloud-8.2.2004-20200611.2.ppc64le.qcow2  -nodefaults -nographic -serial stdio -smp cpus=2 -net nic -net tap,ifname=tap0 -net socket,listen=localhost:1234
+   # qemu-system-ppc64 -machine pseries -cpu power9 -m 4096 -device virtio-blk-pci,id=scsi0,drive=drive0 -drive id=drive0,if=none,file=CentOS-8-GenericCloud-8.2.2004-20200611.2.ppc64le.qcow2  -nodefaults -nographic -serial stdio -smp cpus=2 -net nic -net tap,ifname=tap0,script=no -net socket,listen=localhost:1234
    ```
    - **CAUTION**: DO NOT type Ctrl + C on the console. If you type it, VM shut down.
      - E.g. If you want to ping, you should add -c option.
@@ -151,30 +181,27 @@
    L1i cache:           32K
    NUMA node0 CPU(s):   0,1
    ```
-1. If you want to run the additional VM, run the following command.
-   ```sh
-   # qemu-system-ppc64 -machine pseries -cpu power9 -m 4096 -device virtio-blk-pci,id=scsi0,drive=drive0 -drive id=drive0,if=none,file=CentOS-8-GenericCloud-8.2.2004-20200611.2.ppc64le.qcow2  -nodefaults -nographic -serial stdio -smp cpus=2 -net nic,macaddr=52:54:00:12:34:57 -net socket,connect=localhost:1234
-   ```
-1. You can access the VMs from the host OS via ssh.
-
+1. If you want to run the additional VM, do the following steps.
+   - Copy VM image file, efi-virtio.rom and slof.bin to the same directory.
+   - Create the additional TAP interface.
+     ```sh
+     # ip tuntap add tap1 mode tap
+     # ip tuntap show tap1
+     # ifconfig tap1 0.0.0.0 promisc up
+     # brctl addif virbr0 tap1
+     ``` 
+   - Run the following command.
+     ```sh
+     # qemu-system-ppc64 -machine pseries -cpu power9 -m 4096 -device virtio-blk-pci,id=scsi0,drive=drive0 -drive id=drive0,if=none,file=CentOS-8-GenericCloud-8.2.2004-20200611.2.ppc64le.qcow2  -nodefaults -nographic -serial stdio -smp cpus=2 -net nic,macaddr=52:54:00:12:34:57 -net tap,ifname=tap1,script=no -net socket,connect=localhost:1234
+     ```
+     - You should set macaddr. The first VM has 52:54:00:12:34:57 and you should set the othere MAC address (e.g. 52:54:00:12:34:57).
 ## Create a Cluster
 1. Create a configuration file using Cluster WebUI Offline.
 1. Copy the following files to the VMs.
    - rpm (e.g. expresscls-4.2.2-1.ppc64le.rpm)
    - License 
    - Configuration file (clp.conf and scripts directory)
-1. Shutdown the VMs.
-1. Run the follwoing command to start the first node.
-   ```sh
-   # qemu-system-ppc64 -machine pseries -cpu power9 -m 4096 -device virtio-blk-pci,id=scsi0,drive=drive0 -drive id=drive0,if=none,file=CentOS-8-GenericCloud-8.2.2004-20200611.2.ppc64le.qcow2  -nodefaults -nographic -serial stdio -smp cpus=2 -net nic -net socket,listen=localhost:1234
-   ```
-   - **CAUTION**: After you type the above command, you can not access the VM from the host OS.
-1. Run the following command to the second node.
-   ```sh
-   # qemu-system-ppc64 -machine pseries -cpu power9 -m 4096 -device virtio-blk-pci,id=scsi0,drive=drive0 -drive id=drive0,if=none,file=CentOS-8-GenericCloud-8.2.2004-20200611.2.ppc64le.qcow2  -nodefaults -nographic -serial stdio -smp cpus=2 -net nic,macaddr=52:54:00:12:34:57 -net socket,connect=localhost:1234
-   ```
  1. Change the following parameters of the VMs.
-    - IP address
     - Host name
  1. Change the following parameters in the clp.conf.
     - IP address
@@ -185,3 +212,14 @@
     # clpcfctrl --push -w -x <clp.conf directory>
     ```
  1. Start your cluster.
+<!--
+1. Run the follwoing command to start the first node.
+   ```sh
+   # qemu-system-ppc64 -machine pseries -cpu power9 -m 4096 -device virtio-blk-pci,id=scsi0,drive=drive0 -drive id=drive0,if=none,file=CentOS-8-GenericCloud-8.2.2004-20200611.2.ppc64le.qcow2  -nodefaults -nographic -serial stdio -smp cpus=2 -net nic -net socket,listen=localhost:1234
+   ```
+   - **CAUTION**: After you type the above command, you can not access the VM from the host OS.
+1. Run the following command to the second node.
+   ```sh
+   # qemu-system-ppc64 -machine pseries -cpu power9 -m 4096 -device virtio-blk-pci,id=scsi0,drive=drive0 -drive id=drive0,if=none,file=CentOS-8-GenericCloud-8.2.2004-20200611.2.ppc64le.qcow2  -nodefaults -nographic -serial stdio -smp cpus=2 -net nic,macaddr=52:54:00:12:34:57 -net socket,connect=localhost:1234
+   ```
+-->
