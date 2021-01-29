@@ -39,7 +39,7 @@
 1. Move to the qemu directory and build qemu binary.
    ```sh
    # cd qemu-5.2.0
-   # ./configure --target-list=arm-softmmu
+   # ./configure --target-list=aarch64-softmmu
    # make
    ```
 
