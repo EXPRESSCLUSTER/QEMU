@@ -5,6 +5,7 @@
 - [Build qemu-system-ppc64](#build-qemu-system-ppc64)
 - [Run the VM](#run-the-vm)
 - [Create a Cluster](#create-a-cluster)
+
 ## Evaluation Environment
 ### Use Terminal Access Point (TAP)
 ```
@@ -107,6 +108,7 @@
    ```sh
    # cd qemu-5.0.0
    # ./configure --target-list=ppc64-softmmu
+   # make
    ```
 ## Run the VM
 1. Open ~/.bash_profile and add **/root/.local/bin** to PATH.
