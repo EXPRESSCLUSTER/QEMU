@@ -123,7 +123,12 @@
    ```
 1. Run the follwoing command.
    ```sh
-   # qemu-system-ppc64 -machine pseries -cpu power9 -m 4096 -device virtio-blk-pci,id=scsi0,drive=drive0 -drive id=drive0,if=none,file=CentOS-8-GenericCloud-8.2.2004-20200611.2.ppc64le.qcow2  -nodefaults -nographic -serial stdio -smp cpus=2 -net nic -net tap,ifname=tap0,script=no -net socket,listen=localhost:1234
+   # qemu-system-ppc64 \
+   -machine pseries -cpu power9 -m 4096 \
+   -device virtio-blk-pci,id=scsi0,drive=drive0 \
+   -drive id=drive0,if=none,file=CentOS-8-GenericCloud-8.2.2004-20200611.2.ppc64le.qcow2 \
+   -nodefaults -nographic -serial stdio -smp cpus=2 \
+   -net nic -net tap,ifname=tap0,script=no -net socket,listen=localhost:1234
    ```
    - **CAUTION**: DO NOT type Ctrl + C on the console. If you type it, VM shut down.
      - E.g. If you want to ping, you should add -c option.
@@ -176,7 +181,13 @@
      ``` 
    - Run the following command.
      ```sh
-     # qemu-system-ppc64 -machine pseries -cpu power9 -m 4096 -device virtio-blk-pci,id=scsi0,drive=drive0 -drive id=drive0,if=none,file=CentOS-8-GenericCloud-8.2.2004-20200611.2.ppc64le.qcow2  -nodefaults -nographic -serial stdio -smp cpus=2 -net nic,macaddr=52:54:00:12:34:57 -net tap,ifname=tap1,script=no -net socket,connect=localhost:1234
+     # qemu-system-ppc64 \
+     -machine pseries -cpu power9 -m 4096 \
+     -device virtio-blk-pci,id=scsi0,drive=drive0 \
+     -drive id=drive0,if=none,file=CentOS-8-GenericCloud-8.2.2004-20200611.2.ppc64le.qcow2 \
+     -nodefaults -nographic -serial stdio -smp cpus=2 \
+     -net nic,macaddr=52:54:00:12:34:57 -net tap,ifname=tap1,script=no \
+     -net socket,connect=localhost:1234
      ```
      - You should set macaddr. The first VM has 52:54:00:12:34:57 and you should set the othere MAC address (e.g. 52:54:00:12:34:57).
 
