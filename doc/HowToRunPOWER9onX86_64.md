@@ -37,13 +37,13 @@
 1. Install CentOS 8 on the other machine.
 1. Install the following packages.
    ```sh
-   # dnf install -y libguestfs-tools libvirt
+   dnf install -y libguestfs-tools libvirt
    ```   
 1. Downlowd CentOS cloud image.
    - https://cloud.centos.org/centos/8/ppc64le/images/
 1. Run the following command to change the root password.
    ```sh
-   # export LIBGUESTFS_BACKEND=direct
+   export LIBGUESTFS_BACKEND=direct
    virt-customize -a CentOS-8-GenericCloud-8.2.2004-20200611.2.ppc64le.qcow2  --root-password password:<your password>
    ```
 ## Build qemu-system-ppc64
@@ -52,45 +52,45 @@
 1. Install the following packages.
    - Development tools
      ```sh
-     # yum groupinstall "Development tools"
+     yum groupinstall "Development tools"
      ```
    - Python3
      ```sh
-     # yum install python3
+     yum install python3
      ```
    - glib2-devel
      ```sh
-     # yum install glib2-devel
+     yum install glib2-devel
      ```
    - pixman-devel
      ```sh
-     # yum install pixman-devel
+     yum install pixman-devel
      ```
    - meson and ninja
      ```sh
-     # pip3 --proxy <your proxy server> install meson ninja --user
+     pip3 --proxy <your proxy server> install meson ninja --user
      ```
      - Add bin directory of meson and ninja. 
        ```sh
-       # vi /root/.bash_profile
+       vi /root/.bash_profile
         :
        PATH=$PATH:$HOME/bin:/root/.local/bin     
         :
-       # source .bash_profile
+       source .bash_profile
        ```
 1. Download the qemu binary file and expand it.
    ```sh
-   # cd /root
-   # mkdir work
-   # cd /root/work
-   # curl -O  https://download.qemu.org/qemu-5.0.0.tar.xz
-   # tar xf qemu-5.0.0.tar.xz
+   cd /root
+   mkdir work
+   cd /root/work
+   curl -O  https://download.qemu.org/qemu-5.0.0.tar.xz
+   tar xf qemu-5.0.0.tar.xz
    ```
 1. Move to the qemu directory and build qemu binary.
    ```sh
-   # cd qemu-5.0.0
-   # ./configure --target-list=ppc64-softmmu
-   # make
+   cd qemu-5.0.0
+   ./configure --target-list=ppc64-softmmu
+   make
    ```
 ## Run the VM
 1. Open ~/.bash_profile and add **/root/.local/bin** to PATH.
@@ -99,31 +99,31 @@
    ```   
 1. Enable PATH.
    ```sh
-   # source ~/.bash_profile
+   source ~/.bash_profile
    ```
 1. Create TAP interface.
    ```sh
-   # ip tuntap add tap0 mode tap
-   # ip tuntap show tap0
-   # ifconfig tap0 0.0.0.0 promisc up
-   # brctl addif virbr0 tap0
+   ip tuntap add tap0 mode tap
+   ip tuntap show tap0
+   ifconfig tap0 0.0.0.0 promisc up
+   brctl addif virbr0 tap0
    ```
 1. Create the followin file.
    ```sh
-   # vi /etc/qemu/bridge.conf
+   vi /etc/qemu/bridge.conf
    allow virbr0
    ```
 1. Make a directory and copy the following files.
    ```sh
-   # mkdir centos8
-   # cd centos8
-   # cp <some directory>/CentOS-8-GenericCloud-8.2.2004-20200611.2.ppc64le.qcow2 .
-   # cp /root/work/qemu-5.0.0/pc-bios/efi-virtio.rom .
-   # cp /root/work/qemu-5.0.0/pc-bios/slof.bin .
+   mkdir centos8
+   cd centos8
+   cp <some directory>/CentOS-8-GenericCloud-8.2.2004-20200611.2.ppc64le.qcow2 .
+   cp /root/work/qemu-5.0.0/pc-bios/efi-virtio.rom .
+   cp /root/work/qemu-5.0.0/pc-bios/slof.bin .
    ```
 1. Run the follwoing command.
    ```sh
-   # qemu-system-ppc64 \
+   qemu-system-ppc64 \
    -machine pseries -cpu power9 -m 4096 \
    -device virtio-blk-pci,id=scsi0,drive=drive0 \
    -drive id=drive0,if=none,file=CentOS-8-GenericCloud-8.2.2004-20200611.2.ppc64le.qcow2 \
@@ -133,7 +133,7 @@
    - **CAUTION**: DO NOT type Ctrl + C on the console. If you type it, VM shut down.
      - E.g. If you want to ping, you should add -c option.
        ```sh
-       # ping -c 4 192.168.122.1
+       ping -c 4 192.168.122.1
        ```
 1. Login root user with your password.
    ```
@@ -153,7 +153,7 @@
    ```
 1. Congraturations!
    ```sh
-   # lscpu
+   lscpu
    Architecture:        ppc64le
    Byte Order:          Little Endian
    CPU(s):              2
@@ -170,18 +170,18 @@
    L1i cache:           32K
    NUMA node0 CPU(s):   0,1
    ```
-1. If you want to run the additional VM, do the following steps.
+1. If you want to run the additional virtual machine, do the following steps.
    - Copy VM image file, efi-virtio.rom and slof.bin to the same directory.
    - Create the additional TAP interface.
      ```sh
-     # ip tuntap add tap1 mode tap
-     # ip tuntap show tap1
-     # ifconfig tap1 0.0.0.0 promisc up
-     # brctl addif virbr0 tap1
+     ip tuntap add tap1 mode tap
+     ip tuntap show tap1
+     ifconfig tap1 0.0.0.0 promisc up
+     brctl addif virbr0 tap1
      ``` 
    - Run the following command.
      ```sh
-     # qemu-system-ppc64 \
+     qemu-system-ppc64 \
      -machine pseries -cpu power9 -m 4096 \
      -device virtio-blk-pci,id=scsi0,drive=drive0 \
      -drive id=drive0,if=none,file=CentOS-8-GenericCloud-8.2.2004-20200611.2.ppc64le.qcow2 \
@@ -189,7 +189,7 @@
      -net nic,macaddr=52:54:00:12:34:57 -net tap,ifname=tap1,script=no \
      -net socket,connect=localhost:1234
      ```
-     - You should set macaddr. The first VM has 52:54:00:12:34:57 and you should set the othere MAC address (e.g. 52:54:00:12:34:57).
+     - You should set macaddr. The first virtual machine has 52:54:00:12:34:56 and you should set the othere MAC address (e.g. 52:54:00:12:34:57).
 
 ## Create a Cluster
 1. Create a configuration file using Cluster WebUI Offline.
