@@ -15,7 +15,7 @@
   +-----------------------------------------------------------------------------------+
   | +--------------------------------------+ +--------------------------------------+ |
   | | Virtual Machine (vm1)                | | Virtual Machine (vm2)                | |
-  | | CentOS 7.8                           | | CentOS 7.8                           | |
+  | | CentOS Linux release 7.8.2003        | | CentOS Linux release 7.8.2003        | |
   | | +-----------------------+            | | +-----------------------+            | |
   | | | eth0 (192.168.122.76) |            | | | eth0 (192.168.122.77) |            | |
   | | +--+--------------------+            | | +--+--------------------+            | |
@@ -229,5 +229,6 @@
 -->
 ## Link
 - https://www.mztn.org/dragon/arm64_01.html
+- https://ideal-reality.com/computer/linux/qemu-alpine-virt/
 - https://astr0baby.wordpress.com/2019/01/13/enabling-kvm-in-aarch64-debian-9-6-for-accelerated-virtualization-of-centos-7-6-aarch64/
 - https://www.os-museum.com/qemutapnet/qemutapnet.htm
