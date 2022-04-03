@@ -4,7 +4,7 @@
 - [Evaluation Environment](#evaluation-environment)
 - [Prerequisite](#prerequisite)
 - [Build qemu-system-aarch64](#build-qemu-system-aarch64)
-- [Customize Image File](#customize-image-file)
+- [Customize Cloud Image File](#customize-cloud-image-file)
 - [Run Virtual Machines](#run-virtual-machines)
 - [Link](#link)
 
