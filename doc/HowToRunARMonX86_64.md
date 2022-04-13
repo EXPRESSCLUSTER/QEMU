@@ -65,7 +65,7 @@
 - Install some OS (e.g. CentOS) on a x86_64 virtual machine (called vm0) to change root password.
 
 ## Build qemu-system-aarch64
-1. Install [many packages](https://github.com/EXPRESSCLUSTER/QEMU/blob/master/HowToRunPOWER9onX86_64.md#build-qemu-system-ppc64).
+1. Install [many packages](https://github.com/EXPRESSCLUSTER/QEMU/blob/master/doc/HowToRunPOWER9onX86_64.md#build-qemu-system-ppc64).
 1. Download the qemu binary file and expand it.
    ```sh
    cd /root
@@ -228,6 +228,7 @@
    ```
 -->
 ## Link
+- https://ideal-reality.com/computer/linux/qemu-alpine-virt/
 - https://www.mztn.org/dragon/arm64_01.html
 - https://ideal-reality.com/computer/linux/qemu-alpine-virt/
 - https://astr0baby.wordpress.com/2019/01/13/enabling-kvm-in-aarch64-debian-9-6-for-accelerated-virtualization-of-centos-7-6-aarch64/
