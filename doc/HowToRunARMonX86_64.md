@@ -230,6 +230,5 @@
 ## Link
 - https://ideal-reality.com/computer/linux/qemu-alpine-virt/
 - https://www.mztn.org/dragon/arm64_01.html
-- https://ideal-reality.com/computer/linux/qemu-alpine-virt/
 - https://astr0baby.wordpress.com/2019/01/13/enabling-kvm-in-aarch64-debian-9-6-for-accelerated-virtualization-of-centos-7-6-aarch64/
 - https://www.os-museum.com/qemutapnet/qemutapnet.htm
