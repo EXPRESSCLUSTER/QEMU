@@ -7,9 +7,9 @@
 - [Create a Cluster](#create-a-cluster)
 
 ## Evaluation Environment
-### Use Terminal Access Point (TAP)
-- IP address will be assigned automatically. The first node IP address will be 192.168.122.76. and the second node IP address will be 192.168.122.77.
-#### AlmaLinux 9
+- I use Terminal Access Point (TAP). IP address will be assigned automatically. The first node IP address will be 192.168.122.76. and the second node IP address will be 192.168.122.77.
+
+### AlmaLinux 9
 - You need to use QEMU 5.2.0 to run AlmaLinux 9.
   ```
   +-----------------------------------------------------------------------------------+
@@ -35,7 +35,7 @@
   +-----------------------------------------------------------------------------------+
   ```
 
-#### CeontOS 8
+### CeontOS 8
   ```
   +-----------------------------------------------------------------------------------+
   | +--------------------------------------+ +--------------------------------------+ |
