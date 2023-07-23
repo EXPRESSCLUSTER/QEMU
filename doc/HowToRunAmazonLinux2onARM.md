@@ -7,6 +7,7 @@
 -->
   ```
   +-----------------------------------------------------------------------------------+
+  | CentOS Linux release 7.9.2009 (Core)                                              |
   | +--------------------------------------+ +--------------------------------------+ |
   | | Virtual Machine (vm1)                | | Virtual Machine (vm2)                | |
   | | Amazon Linux 2                       | | Amazon Linux 2                       | |
@@ -25,7 +26,6 @@
   |   | virbr0 (192.168.122.1) |                                                      |
   |   +------------------------+                                                      |
   |                                                                                   |
-  | CentOS Linux release 7.9.2009 (Core)                                              |
   +-----------------------------------------------------------------------------------+
   ```
 
@@ -92,8 +92,11 @@
    -m 2G \
    -smp cpus=2 \
    -bios QEMU_EFI.img \
+   -cdrom seed.iso \
    -drive if=none,file=amzn2-kvm-2.0.20221103.3-arm64.xfs.gpt.qcow2,id=hd0 \
    -device virtio-blk-device,drive=hd0 \
+   -drive if=none,file=md1.qcow2,id=hd1 \
+   -device virtio-blk-device,drive=hd1 \
    -nographic \
    -net nic \
    -net tap,ifname=tap0,script=no \
@@ -134,8 +137,11 @@
    -m 2G \
    -smp cpus=2 \
    -bios QEMU_EFI.img \
+   -cdrom seed.iso \
    -drive if=none,file=amzn2-kvm-2.0.20221103.3-arm64.xfs.gpt.qcow2,id=hd0 \
    -device virtio-blk-device,drive=hd0 \
+   -drive if=none,file=md1.qcow2,id=hd1 \
+   -device virtio-blk-device,drive=hd1 \
    -nographic \
    -net nic,macaddr=52:54:00:12:34:57 \
    -net tap,ifname=tap1,script=no \
