@@ -13,6 +13,9 @@
 - IP address will be assigned automatically. The first virtual machine's IP address will be 192.168.122.76. and the second virtual machine's IP address will be 192.168.122.77.
   ```
   +-----------------------------------------------------------------------------------+
+  | Host OS                                                                           |
+  | CentOS Linux release 7.9.2009 (Core)                                              |
+  |                                                                                   |
   | +--------------------------------------+ +--------------------------------------+ |
   | | Virtual Machine (vm1)                | | Virtual Machine (vm2)                | |
   | | CentOS Linux release 7.8.2003        | | CentOS Linux release 7.8.2003        | |
@@ -30,8 +33,6 @@
   |   +--+--------+------------+                                                      |
   |   | virbr0 (192.168.122.1) |                                                      |
   |   +------------------------+                                                      |
-  |                                                                                   |
-  | CentOS Linux release 7.9.2009 (Core)                                              |
   +-----------------------------------------------------------------------------------+
   ```
 <!--
