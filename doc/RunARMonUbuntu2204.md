@@ -90,7 +90,7 @@
    sudo ip link set dev tap0 up
    ```
 1. Create run.sh as below.
-   ```
+   ```sh
    qemu-system-aarch64 \
    -M virt \
    -cpu cortex-a72 \
@@ -105,3 +105,35 @@
    -net tap,ifname=tap0,script=no \
    -net socket,listen=localhost:1234   
    ```
+1. Run VM!
+
+### Second Node
+1. Run the following commands.
+   ```sh
+   sudo ip tuntap add tap1 mode tap
+   ```
+   ```sh
+   sudo ip link set tap1 promisc on
+   ```
+   ```sh
+   sudo ip link set dev tap1 master virbr0
+   ```
+   ```sh
+   sudo ip link set dev tap1 up
+   ```   
+1. Create run.sh as below. You must set the different MAC address as below.
+   ```sh
+   qemu-system-aarch64 \
+   -M virt \
+   -cpu cortex-a72 \
+   -m 2G \
+   -smp cpus=2 \
+   -nographic \
+   -cdrom ./seedconfig/seed.iso \
+   -bios QEMU_EFI.fd \
+   -drive if=none,file=amzn2-12.qcow2,id=hd0 \
+   -device virtio-blk-device,drive=hd0 \
+   -net nic,macaddr=52:54:00:12:34:57 \
+   -net tap,ifname=tap1,script=no
+   ```
+1. Run VM!
