@@ -99,14 +99,9 @@
       - See also: https://wiki.almalinux.org/cloud/Generic-cloud-on-local.html#cloud-init
 1. Download qcow2 file, rename it (e.g., alma9-101.qcow2) and save it on the alma9-101 directory.
    - https://wiki.almalinux.org/cloud/Generic-cloud.html
-1. Create an additional disk (e.g., md1.qcow2).
-   ```sh
-   qemu-img create -f qcow2 md1.qcow2 10G
-   ```
 1. Save the above files on the same directory as below.
    ```
    +--- alma9-101.qcow2
-   +--- md1.qcow2
    +--- seedconfig
         +--- meta-data
         +--- seed.iso
