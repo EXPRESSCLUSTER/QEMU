@@ -5,7 +5,9 @@
 - [Notes](#notes)
 - [Configuration](#configuration)
 - [Install Packages](#install-packages)
-- [Run Virtual Machines](#run-virtual-machines)
+- [Run Virtual Machines (POWER9)](#run-virtual-machines-power9)
+- [Run Virtual Machines (POWER10)](#run-virtual-machines-power10)
+  - We have faced OS panic :-(
 
 ## Notes
 - This configuration uses TAP for guest OS network. You need TAP for each virtual machine.
