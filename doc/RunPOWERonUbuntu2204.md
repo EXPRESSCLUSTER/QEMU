@@ -1,5 +1,7 @@
 # How to Run POWER on Ubuntu (x86_64)
 - This article describe how to run POWER virtual machine on Ubuntu Server running on x86_64.
+  - Ubuntu Server 22.04.2 LTS
+  - QEMU 6.2.0
 
 ## Index
 - [Notes](#notes)
@@ -7,7 +9,8 @@
 - [Install Packages](#install-packages)
 - [Run Virtual Machines (POWER9)](#run-virtual-machines-power9)
 - [Run Virtual Machines (POWER10)](#run-virtual-machines-power10)
-  - We have got OS panic :-(
+  - We couldn't run a virtual machine on POWER10 with QEMU 6.2.0. We have built qemu-system-ppc64 command by ourself.
+    - [Build QEMU on Ubuntu 22.04](doc/BuildQEMUonUbuntu2204.md)
 
 ## Notes
 - This configuration uses TAP for guest OS network. You need TAP for each virtual machine.
@@ -194,45 +197,43 @@
    ```
 
 ## Run Virtual Machines (POWER10)
-1. Create run.sh as below.
-   ```sh
-   qemu-system-ppc64le \
-   -M pseries \
-   -cpu power10 \
-   -m 2G \
-   -smp cpus=2 \
-   -nographic \
-   -cdrom ./seedconfig/seed.iso \
-   -device virtio-blk-pci,id=scsi0,drive=drive0 \
-   -drive id=drive0,if=none,file=alma9-101.qcow2 \
-   -nodefaults \
-   -serial stdio \
-   -net nic \
-   -net tap,ifname=tap0,script=no
-   ```
-1. Run VM!
-   ```sh
-   ./run.sh
-   ```
-1. We have got OS panic...
-   ```
-   [    5.461792] Run /init as init process
-   [    5.822257] systemd[1]: illegal instruction (4) at 7fff86928fd8 nip 7fff86928fd8 lr 7fff868c8188 code 1 in libc.so.6[7fff86840000+240000]
-   [    5.825248] systemd[1]: code: 4bffff78 48000014 60000000 60000000 60000000 60000000 7c852378 10259006
-   [    5.825931] systemd[1]: code: 10449006 10679006 10869006 7ca53214 <10e80e42> 11081642 11281e42 11482642
-   [    5.842785] Core dump to |/bin/false pipe failed
-   [    5.844513] Kernel panic - not syncing: Attempted to kill init! exitcode=0x00000004
-   [    5.845414] CPU: 1 PID: 1 Comm: systemd Not tainted 5.14.0-284.11.1.el9_2.ppc64le #1
-   [    5.846554] Call Trace:
-   [    5.846876] [c00000000354f9f0] [c000000000844d40] dump_stack_lvl+0x74/0xa8 (unreliable)
-   [    5.849413] [c00000000354fa30] [c000000000149294] panic+0x160/0x3ec
-   [    5.849871] [c00000000354fad0] [c000000000152df4] do_exit+0x554/0x560
-   [    5.850298] [c00000000354fb70] [c000000000152fac] do_group_exit+0x4c/0xd0
-   [    5.850748] [c00000000354fbb0] [c000000000168edc] get_signal+0xc8c/0xcc0
-   [    5.851177] [c00000000354fca0] [c0000000000205dc] do_signal+0x7c/0x320
-   [    5.851608] [c00000000354fd40] [c000000000021710] do_notify_resume+0xb0/0x140
-   [    5.852070] [c00000000354fd70] [c00000000002f308] interrupt_exit_user_prepare_main+0x198/0x270
-   [    5.852595] [c00000000354fde0] [c00000000002f96c] interrupt_exit_user_prepare+0x5c/0xc0
-   [    5.853122] [c00000000354fe10] [c00000000000c774] interrupt_return_srr_user+0x8/0x138
-   [    5.853734] --- interrupt: 700 at 0x7fff86928fd8  
-   ```
+- We have create the run.sh file as below but we have got OS panic. So that, We have built qemu-system-ppc64 command by ourself.
+  - [Build QEMU on Ubuntu 22.04](doc/BuildQEMUonUbuntu2204.md)
+  - run.sh
+    ```sh
+    qemu-system-ppc64le \
+    -M pseries \
+    -cpu power10 \
+    -m 2G \
+    -smp cpus=2 \
+    -nographic \
+    -cdrom ./seedconfig/seed.iso \
+    -device virtio-blk-pci,id=scsi0,drive=drive0 \
+    -drive id=drive0,if=none,file=alma9-101.qcow2 \
+    -nodefaults \
+    -serial stdio \
+    -net nic \
+    -net tap,ifname=tap0,script=no
+    ```
+  - OS panic
+    ```
+    [    5.461792] Run /init as init process
+    [    5.822257] systemd[1]: illegal instruction (4) at 7fff86928fd8 nip 7fff86928fd8 lr 7fff868c8188 code 1 in libc.so.6[7fff86840000+240000]
+    [    5.825248] systemd[1]: code: 4bffff78 48000014 60000000 60000000 60000000 60000000 7c852378 10259006
+    [    5.825931] systemd[1]: code: 10449006 10679006 10869006 7ca53214 <10e80e42> 11081642 11281e42 11482642
+    [    5.842785] Core dump to |/bin/false pipe failed
+    [    5.844513] Kernel panic - not syncing: Attempted to kill init! exitcode=0x00000004
+    [    5.845414] CPU: 1 PID: 1 Comm: systemd Not tainted 5.14.0-284.11.1.el9_2.ppc64le #1
+    [    5.846554] Call Trace:
+    [    5.846876] [c00000000354f9f0] [c000000000844d40] dump_stack_lvl+0x74/0xa8 (unreliable)
+    [    5.849413] [c00000000354fa30] [c000000000149294] panic+0x160/0x3ec
+    [    5.849871] [c00000000354fad0] [c000000000152df4] do_exit+0x554/0x560
+    [    5.850298] [c00000000354fb70] [c000000000152fac] do_group_exit+0x4c/0xd0
+    [    5.850748] [c00000000354fbb0] [c000000000168edc] get_signal+0xc8c/0xcc0
+    [    5.851177] [c00000000354fca0] [c0000000000205dc] do_signal+0x7c/0x320
+    [    5.851608] [c00000000354fd40] [c000000000021710] do_notify_resume+0xb0/0x140
+    [    5.852070] [c00000000354fd70] [c00000000002f308] interrupt_exit_user_prepare_main+0x198/0x270
+    [    5.852595] [c00000000354fde0] [c00000000002f96c] interrupt_exit_user_prepare+0x5c/0xc0
+    [    5.853122] [c00000000354fe10] [c00000000000c774] interrupt_return_srr_user+0x8/0x138
+    [    5.853734] --- interrupt: 700 at 0x7fff86928fd8  
+    ```
