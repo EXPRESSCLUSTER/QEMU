@@ -2,7 +2,7 @@
 
 ## Index
 - [How to Build the Command](#how-to-build-the-command)
-- 
+- [Run Virtual Machine (POWER10)](#run-virtual-machines-power10)
 - [Reference](#reference)
 
 ## How to Build the Command
